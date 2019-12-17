@@ -1,10 +1,11 @@
-// Globals
+/* Globals */
 const studentList = document.querySelectorAll("li.student-item");
 let tempList = studentList;
 const itemsPerPage = 10;
 const container = document.querySelector('div.page');
+const studentListUl = document.querySelector('ul.student-list');
 
-// re-usable helpers
+/* Helper Functions */
 const createElement = (el, prop, val, prop2 = null, val2 = null) => {
    const element = document.createElement(el);
    element[prop] = val;
@@ -13,6 +14,7 @@ const createElement = (el, prop, val, prop2 = null, val2 = null) => {
    }
    return element;
 }
+
 const createTree = (...nodes) => {
    for (let i = 0; i < nodes.length - 1; i++) {
      const parent = nodes[i];
@@ -21,7 +23,14 @@ const createTree = (...nodes) => {
    }
 }
 
-// helper function that updates active page number
+const removeIfExists = (node) => {
+   if (document.querySelector(node)) {
+      const child = document.querySelector(node);
+      const parent = child.parentNode;
+      parent.removeChild(child);
+   }
+}
+
 const updateActiveLink = (page) => {
    const paginationLinks = document.querySelectorAll('.pagination ul li a');
    for (let i = 0; i < paginationLinks.length; i++) {
@@ -30,41 +39,51 @@ const updateActiveLink = (page) => {
    paginationLinks[page - 1].className = 'active';
 }
 
+/* Main Functions */
+
 // displays set of students
 const showPage = (list, page) => {
-   // only update active link if there are results
-   if (list.length > 0) {
+   const resultsFound = list.length > 0;
+
+   if (resultsFound) {
+      removeIfExists("div.no-results");
       updateActiveLink(page);
-   }
 
-   const startIdx = (page * itemsPerPage) - (itemsPerPage);
-   const endIdx = (page * itemsPerPage);
+      const startIdx = (page * itemsPerPage) - (itemsPerPage);
+      const endIdx = (page * itemsPerPage);
 
-   for (let i = 0; i < list.length; i++) {
-      const li = list[i];
-      if (i >= startIdx && i < endIdx) {
-         li.style.display = '';
-      } else {
-         li.style.display = 'none';
+      for (let i = 0; i < list.length; i++) {
+         const li = list[i];
+         if (i >= startIdx && i < endIdx) {
+            li.style.display = '';
+         } else {
+            li.style.display = 'none';
+         }
+      }
+   } else {
+      // if the no-results div doesn't exists, create one
+      if (!document.querySelector("div.no-results")) {
+         const div = createElement('div', 'className', 'no-results');
+         const p = createElement("p", "textContent", "No results found.");
+         div.appendChild(p);
+         container.insertBefore(div, studentListUl);
       }
    }
+
 }
 
 // adds page numbers to bottom
 const appendPageLinks = (list) => {
-   if (document.querySelector("div.pagination")) {
-      container.removeChild(document.querySelector("div.pagination"));
-   }
+   removeIfExists("div.pagination");
+
    const div = createElement('div', 'className', 'pagination');
    const ul = document.createElement('ul');
-
    const totalLi = Math.ceil(list.length / itemsPerPage);
    for (let i = 1; i <= totalLi; i++) {
       const li = document.createElement('li');
       const a = createElement('a', 'href', '#', 'textContent', i);
       createTree(ul, li, a);
    }
-
    createTree(container, div, ul);
 
    // runs showPage when a page number is clicked 
@@ -82,9 +101,8 @@ const addSearchBar = () => {
    const form = createElement('form', 'className', 'student-search');
    const input = createElement('input', 'placeholder', 'Search for students...');
    const button = createElement('button', 'textContent', 'Search');
-   form.appendChild(input);
+   createTree(pageHeader,form,input);
    form.appendChild(button);
-   pageHeader.append(form);
 
    form.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -112,7 +130,7 @@ const conductSearch = (text) => {
       }
    }
 
-   // paginate search results
+   // render & paginate results
    appendPageLinks(tempList);
    showPage(tempList, 1);
 }
@@ -120,7 +138,7 @@ const conductSearch = (text) => {
 
 
 
-// initialize app
+/* Initialize App */ 
 appendPageLinks(studentList);
 showPage(studentList, 1);
 addSearchBar();
