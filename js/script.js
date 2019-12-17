@@ -1,5 +1,6 @@
 // Globals
 const studentList = document.querySelectorAll("li.student-item");
+let tempList = studentList;
 const itemsPerPage = 10;
 const container = document.querySelector('div.page');
 
@@ -31,7 +32,10 @@ const updateActiveLink = (page) => {
 
 // displays set of students
 const showPage = (list, page) => {
-   updateActiveLink(page);
+   // only update active link if there are results
+   if (list.length > 0) {
+      updateActiveLink(page);
+   }
 
    const startIdx = (page * itemsPerPage) - (itemsPerPage);
    const endIdx = (page * itemsPerPage);
@@ -48,6 +52,9 @@ const showPage = (list, page) => {
 
 // adds page numbers to bottom
 const appendPageLinks = (list) => {
+   if (document.querySelector("div.pagination")) {
+      container.removeChild(document.querySelector("div.pagination"));
+   }
    const div = createElement('div', 'className', 'pagination');
    const ul = document.createElement('ul');
 
@@ -65,7 +72,7 @@ const appendPageLinks = (list) => {
       if (e.target.tagName === "A") {
          const a = e.target;
          const pageNumber = a.textContent;
-         showPage(studentList, pageNumber);
+         showPage(tempList, pageNumber);
       }
    });
 }
@@ -91,17 +98,23 @@ const addSearchBar = () => {
    });
 }
 
+
 const conductSearch = (text) => {
+   tempList = [];
    for (let i = 0; i < studentList.length; i++) {
       const studentLi = studentList[i];
       const studentName = studentList[i].querySelector('h3').textContent;
       if (studentName.includes(text)) {
          studentLi.style.display = '';
+         tempList.push(studentLi);
       } else {
          studentLi.style.display = 'none';
       }
-      
    }
+
+   // paginate search results
+   appendPageLinks(tempList);
+   showPage(tempList, 1);
 }
    
 
