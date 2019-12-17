@@ -15,6 +15,7 @@ const createElement = (el, prop, val, prop2 = null, val2 = null) => {
    return element;
 }
 
+// for creating trees like div > ul > li
 const createTree = (...nodes) => {
    for (let i = 0; i < nodes.length - 1; i++) {
      const parent = nodes[i];
@@ -104,12 +105,12 @@ const addSearchBar = () => {
    createTree(pageHeader,form,input);
    form.appendChild(button);
 
+   // search bar events
    form.addEventListener('submit', (e) => {
       e.preventDefault();
       const text = input.value;
       conductSearch(text);
    }); 
-
    input.addEventListener('keyup', (e) => {
       const text = input.value;
       conductSearch(text);
@@ -118,6 +119,7 @@ const addSearchBar = () => {
 
 
 const conductSearch = (text) => {
+   // reset tempList & create new tempList based off current search
    tempList = [];
    for (let i = 0; i < studentList.length; i++) {
       const studentLi = studentList[i];
@@ -135,8 +137,6 @@ const conductSearch = (text) => {
    showPage(tempList, 1);
 }
    
-
-
 
 /* Initialize App */ 
 appendPageLinks(studentList);
