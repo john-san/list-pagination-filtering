@@ -3,6 +3,23 @@ const studentList = document.querySelectorAll("li.student-item");
 const itemsPerPage = 10;
 const container = document.querySelector('div.page');
 
+// re-usable helpers
+const createElement = (el, prop, val, prop2 = null, val2 = null) => {
+   const element = document.createElement(el);
+   element[prop] = val;
+   if (prop2 !== null && val2 !== null) {
+      element[prop2] = val2;
+   }
+   return element;
+}
+const createTree = (...nodes) => {
+   for (let i = 0; i < nodes.length - 1; i++) {
+     const parent = nodes[i];
+     const child = nodes[i + 1];
+     parent.appendChild(child);
+   }
+}
+
 // helper function that updates active page number
 const updateActiveLink = (page) => {
    const paginationLinks = document.querySelectorAll('.pagination ul li a');
@@ -31,57 +48,42 @@ const showPage = (list, page) => {
 
 // adds page numbers to bottom
 const appendPageLinks = (list) => {
-   const div = document.createElement('div');
-   div.className = 'pagination';
+   const div = createElement('div', 'className', 'pagination');
    const ul = document.createElement('ul');
 
    const totalLi = Math.ceil(list.length / itemsPerPage);
    for (let i = 1; i <= totalLi; i++) {
       const li = document.createElement('li');
-      const a = document.createElement('a');
-      a.href = '#';
-      a.textContent = i;
-      li.appendChild(a);
-      ul.appendChild(li);
+      const a = createElement('a', 'href', '#', 'textContent', i);
+      createTree(ul, li, a);
    }
 
-   div.appendChild(ul);
-   container.appendChild(div);
+   createTree(container, div, ul);
 
    // runs showPage when a page number is clicked 
    div.addEventListener('click', (e) => {
-      if (event.target.tagName === "A") {
-         const a = event.target;
+      if (e.target.tagName === "A") {
+         const a = e.target;
          const pageNumber = a.textContent;
          showPage(studentList, pageNumber);
       }
    });
 }
 
+const addSearchBar = () => {
+   const pageHeader = container.firstElementChild;
+   const div = createElement('div', 'className', 'student-search');
+   const input = createElement('input', 'placeholder', 'Search for students...');
+   const button = createElement('button', 'textContent', 'Search');
+   div.appendChild(input);
+   div.appendChild(button);
+   pageHeader.append(div);
+}
 
-// set page header
-const pageHeader = container.firstElementChild;
-// create div
-const div = document.createElement('div');
-// set div's class
-div.className = 'page-header';
-// create input
-// set input's placeholder
-// create button
-// set button's textContent
-// append
 
-// <div class="page">
-//       <div class="page-header cf">
-//         <h2>Students</h2>
-        
-//         <!-- student search HTML to add dynamically -->
-//         <div class="student-search">
-//           <input placeholder="Search for students...">
-//           <button>Search</button>
-//         </div>
-//         <!-- end search --></div>
+
 
 // initialize app
 appendPageLinks(studentList);
 showPage(studentList, 1);
+addSearchBar();
