@@ -1,6 +1,7 @@
 // Globals
 const studentList = document.querySelectorAll("li.student-item");
 const itemsPerPage = 10;
+const container = document.querySelector('div.page');
 
 // helper function that updates active page number
 const updateActiveLink = (page) => {
@@ -30,7 +31,6 @@ const showPage = (list, page) => {
 
 // adds page numbers to bottom
 const appendPageLinks = (list) => {
-   const container = document.querySelector('div.page');
    const div = document.createElement('div');
    div.className = 'pagination';
    const ul = document.createElement('ul');
@@ -58,6 +58,29 @@ const appendPageLinks = (list) => {
    });
 }
 
+
+// set page header
+const pageHeader = container.firstElementChild;
+// create div
+const div = document.createElement('div');
+// set div's class
+div.className = 'page-header';
+// create input
+// set input's placeholder
+// create button
+// set button's textContent
+// append
+
+// <div class="page">
+//       <div class="page-header cf">
+//         <h2>Students</h2>
+        
+//         <!-- student search HTML to add dynamically -->
+//         <div class="student-search">
+//           <input placeholder="Search for students...">
+//           <button>Search</button>
+//         </div>
+//         <!-- end search --></div>
 
 // initialize app
 appendPageLinks(studentList);
