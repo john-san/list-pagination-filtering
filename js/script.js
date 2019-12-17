@@ -16,7 +16,11 @@ FSJS project 2 - List Filter and Pagination
    will only be used inside of a function, then it can be locally 
    scoped to that function.
 ***/
-
+// var to store student list
+const studentList = document.querySelectorAll("li.student-item");
+console.log(studentList.length);
+// var to store number of items to show on each page, max of 10 per page
+const itemsPerPage = 10;
 
 
 
@@ -34,16 +38,67 @@ FSJS project 2 - List Filter and Pagination
        that will be passed into the parens later when you call or 
        "invoke" the function 
 ***/
+const showPage = (list, page) => {
+   const startIdx = (page * itemsPerPage) - (itemsPerPage + 1);
+   const endIdx = (page * itemsPerPage) - 1;
 
+   // loop over list
+   for (let i = 0; i < list.length; i++) {
+      // if within indexes, display
+      const li = list[i];
+      if (i >= startIdx && i <= endIdx) {
+         // console.log('show');
+         li.style.display = '';
+      } else {
+         // console.log('hide');
+         li.style.display = 'none';
+      }
+   }
+      
+   // end loop
+}
 
-
+showPage(studentList, 1);
 
 /*** 
    Create the `appendPageLinks function` to generate, append, and add 
    functionality to the pagination buttons.
 ***/
+const appendPageLinks = (list) => {
+   // container div
+   const container = document.querySelector('div.page');
+   // create div
+   const div = document.createElement('div');
+   // add class .pagination to div
+   div.className = 'pagination';
+   // create ul
+   const ul = document.createElement('ul');
+   // append to div
+   div.appendChild(ul);
+   // var to store total list items.  Math.ceil(list.length / itemsPerPage)  
+   const totalLi = Math.ceil(list.length / itemsPerPage);
+   
+   // for loop on totalLi
+   for (let i = 1; i <= totalLi; i++) {
+      const li = document.createElement('li');
+      // create li
+      // create a
+      const a = document.createElement('a');
+      // a's attribute  href='#'
+      a.href = '#';
+      // a's textContent = number
+      a.textContent = i;
+      // append a to li
+      li.appendChild(a);
+      // append li to ul
+      ul.appendChild(li);
+   // end for loop
+   }
 
+   container.appendChild(div);
+}
 
+appendPageLinks(studentList);
 
 
 
