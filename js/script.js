@@ -72,14 +72,38 @@ const appendPageLinks = (list) => {
 
 const addSearchBar = () => {
    const pageHeader = container.firstElementChild;
-   const div = createElement('div', 'className', 'student-search');
+   const form = createElement('form', 'className', 'student-search');
    const input = createElement('input', 'placeholder', 'Search for students...');
    const button = createElement('button', 'textContent', 'Search');
-   div.appendChild(input);
-   div.appendChild(button);
-   pageHeader.append(div);
+   form.appendChild(input);
+   form.appendChild(button);
+   pageHeader.append(form);
+
+   form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const text = input.value;
+      conductSearch(text);
+   }); 
+
+   input.addEventListener('keyup', (e) => {
+      const text = input.value;
+      conductSearch(text);
+   });
 }
 
+const conductSearch = (text) => {
+   for (let i = 0; i < studentList.length; i++) {
+      const studentLi = studentList[i];
+      const studentName = studentList[i].querySelector('h3').textContent;
+      if (studentName.includes(text)) {
+         studentLi.style.display = '';
+      } else {
+         studentLi.style.display = 'none';
+      }
+      
+   }
+}
+   
 
 
 
