@@ -32,26 +32,26 @@ const removeIfExists = (node) => {
    }
 }
 
-const updateActiveLink = (page) => {
+const updateActivePageNumber = (pageNumber) => {
    const paginationLinks = document.querySelectorAll('.pagination ul li a');
    for (let i = 0; i < paginationLinks.length; i++) {
       paginationLinks[i].className = '';
    }
-   paginationLinks[page - 1].className = 'active';
+   paginationLinks[pageNumber - 1].className = 'active';
 }
 
 /* Main Functions */
 
 // displays set of students
-const showPage = (list, page) => {
+const showPage = (list, pageNumber) => {
    const resultsFound = list.length > 0;
 
    if (resultsFound) {
       removeIfExists("div.no-results");
-      updateActiveLink(page);
+      updateActivePageNumber(pageNumber);
 
-      const startIdx = (page * itemsPerPage) - (itemsPerPage);
-      const endIdx = (page * itemsPerPage);
+      const startIdx = (pageNumber * itemsPerPage) - (itemsPerPage);
+      const endIdx = (pageNumber * itemsPerPage);
 
       for (let i = 0; i < list.length; i++) {
          const li = list[i];
@@ -62,7 +62,7 @@ const showPage = (list, page) => {
          }
       }
    } else {
-      // if the no-results div doesn't exists, create one
+      // if the no-results div doesn't exist, then create one
       if (!document.querySelector("div.no-results")) {
          const div = createElement('div', 'className', 'no-results');
          const p = createElement("p", "textContent", "No results found.");
@@ -87,7 +87,7 @@ const appendPageLinks = (list) => {
    }
    createTree(container, div, ul);
 
-   // runs showPage when a page number is clicked 
+   // runs showPage when a pageNumber is clicked 
    div.addEventListener('click', (e) => {
       if (e.target.tagName === "A") {
          const a = e.target;
@@ -105,7 +105,7 @@ const addSearchBar = () => {
    createTree(pageHeader,form,input);
    form.appendChild(button);
 
-   // search bar events
+   // searchBar events
    form.addEventListener('submit', (e) => {
       e.preventDefault();
       const text = input.value;
@@ -117,14 +117,14 @@ const addSearchBar = () => {
    });
 }
 
-
+// reset tempList & create new tempList based off current search
 const conductSearch = (text) => {
-   // reset tempList & create new tempList based off current search
    tempList = [];
+   const lowerCaseText = text.toLowerCase();
    for (let i = 0; i < studentList.length; i++) {
       const studentLi = studentList[i];
-      const studentName = studentList[i].querySelector('h3').textContent;
-      if (studentName.includes(text)) {
+      const studentName = studentList[i].querySelector('h3').textContent.toLowerCase();
+      if (studentName.includes(lowerCaseText)) {
          studentLi.style.display = '';
          tempList.push(studentLi);
       } else {
@@ -136,7 +136,7 @@ const conductSearch = (text) => {
    appendPageLinks(tempList);
    showPage(tempList, 1);
 }
-   
+
 
 /* Initialize App */ 
 appendPageLinks(studentList);
